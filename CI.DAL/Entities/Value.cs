@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace CI.DAL.Entities
 {
     public class Value
