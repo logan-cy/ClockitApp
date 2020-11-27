@@ -1,19 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 using CI.DAL;
 using CI.DAL.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CI.API
 {
@@ -28,9 +25,8 @@ namespace CI.API
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
-    {
-      // For testing - remove this to set defaults later.
-      var identityBuilder = services.AddIdentityCore<User>(options =>
+    {      
+      var identityBuilder = services.AddIdentity<User, IdentityRole>(options => 
       {
         options.Password.RequireDigit = false;
         options.Password.RequireLowercase = false;
@@ -39,10 +35,28 @@ namespace CI.API
         options.Password.RequiredLength = 4;
       });
       identityBuilder.AddEntityFrameworkStores<ApplicationDbContext>();
-      services.AddDbContext<ApplicationDbContext>(options =>
+      identityBuilder.AddSignInManager<SignInManager<User>>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+              .AddJwtBearer(options =>
+              {
+                  options.TokenValidationParameters = new TokenValidationParameters
+                  {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Key").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                  };
+              });
+
+            //identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole), identityBuilder.Services);
+            //identityBuilder.AddRoleManager<RoleManager<IdentityRole>>();
+
+            services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
       services.AddControllers();
+      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +79,7 @@ namespace CI.API
 
       app.UseRouting();
 
+      app.UseAuthentication();
       app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
