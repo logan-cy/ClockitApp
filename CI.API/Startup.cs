@@ -25,8 +25,8 @@ namespace CI.API
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
-    {      
-      var identityBuilder = services.AddIdentity<User, IdentityRole>(options => 
+    {
+      var identityBuilder = services.AddIdentity<User, IdentityRole>(options =>
       {
         options.Password.RequireDigit = false;
         options.Password.RequireLowercase = false;
@@ -37,22 +37,22 @@ namespace CI.API
       identityBuilder.AddEntityFrameworkStores<ApplicationDbContext>();
       identityBuilder.AddSignInManager<SignInManager<User>>();
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-              .AddJwtBearer(options =>
-              {
-                  options.TokenValidationParameters = new TokenValidationParameters
-                  {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Key").Value)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                  };
-              });
+      identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole), identityBuilder.Services);
+      identityBuilder.AddRoleManager<RoleManager<IdentityRole>>();
 
-            //identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole), identityBuilder.Services);
-            //identityBuilder.AddRoleManager<RoleManager<IdentityRole>>();
+      services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+          options.TokenValidationParameters = new TokenValidationParameters
+          {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Key").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+          };
+        });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+      services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
       services.AddControllers();

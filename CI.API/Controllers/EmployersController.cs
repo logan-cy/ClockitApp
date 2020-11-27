@@ -16,10 +16,12 @@ namespace CI.API.Controllers
   public class EmployersController : ControllerBase
   {
     private readonly UserManager<User> _userManager;
+    public RoleManager<IdentityRole> _roleManager { get; }
 
-    public EmployersController(UserManager<User> userManager)
+    public EmployersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
     {
-      this._userManager = userManager;
+      _roleManager = roleManager;
+      _userManager = userManager;
 
     }
 
@@ -27,6 +29,13 @@ namespace CI.API.Controllers
     [HttpPost("Create")]
     public async Task<IActionResult> Create(CreateEmployerViewModel model)
     {
+      // TODO: move this to Seed method.
+      // TODO: set up enum for role names.
+      if (!await _roleManager.RoleExistsAsync("Employer"))
+      {
+        await _roleManager.CreateAsync(new IdentityRole("Employer"));
+      }
+
       var employer = new User
       {
         UserName = model.Username,
@@ -36,8 +45,12 @@ namespace CI.API.Controllers
 
       if (!result.Succeeded)
       {
-          return BadRequest(result);
+        return BadRequest(result);
       }
+
+      var user = await _userManager.FindByNameAsync(employer.UserName);
+      await _userManager.AddToRoleAsync(user, "Employer");
+
       return Ok(result);
     }
 

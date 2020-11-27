@@ -20,8 +20,8 @@ namespace CI.API.Controllers
         }
 
         // GET: api/values http://localhost:5000/api/values
-        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Employer")]
         public async Task<IActionResult> Get() {
             var values = await _context.Values.ToListAsync();
             return Ok(values);
