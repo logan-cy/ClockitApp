@@ -40,6 +40,10 @@ namespace CI.API
       identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole), identityBuilder.Services);
       identityBuilder.AddRoleManager<RoleManager<IdentityRole>>();
 
+      services.AddAuthorization(options =>
+        options.AddPolicy("EmployerPolicy",
+          policy => policy.RequireRole("Employer")));
+
       services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
