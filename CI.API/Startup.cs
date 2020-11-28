@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using CI.SER.Interfaces;
+using CI.SER;
+using CI.SER.DTOs;
 
 namespace CI.API
 {
@@ -39,6 +42,7 @@ namespace CI.API
 
       identityBuilder = new IdentityBuilder(identityBuilder.UserType, typeof(IdentityRole), identityBuilder.Services);
       identityBuilder.AddRoleManager<RoleManager<IdentityRole>>();
+      identityBuilder.AddDefaultTokenProviders();
 
       services.AddAuthorization(options =>
         options.AddPolicy("EmployerPolicy",
@@ -58,6 +62,9 @@ namespace CI.API
 
       services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+      services.AddSingleton<IEmail, Mailjet>();
+      services.Configure<EmailOptionsDTO>(Configuration.GetSection("Mailjet"));
 
       services.AddControllers();
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
