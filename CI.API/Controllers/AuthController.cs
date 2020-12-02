@@ -9,6 +9,8 @@ using System.Web;
 using CI.API.ViewModels;
 using CI.DAL;
 using CI.DAL.Entities;
+using CI.SER.DTOs;
+using CI.SER.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,9 +27,13 @@ namespace CI.API.Controllers
     private readonly IConfiguration _config;
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
+    public IEmail _emailService { get; }
+    public IOptions<EmailOptionsDTO> _emailOptions { get; }
 
-    public AuthController(IConfiguration config, UserManager<User> userManager, SignInManager<User> signInManager)
+    public AuthController(IConfiguration config, UserManager<User> userManager, SignInManager<User> signInManager, IEmail emailService, IOptions<EmailOptionsDTO> emailOptions)
     {
+      _emailOptions = emailOptions;
+      _emailService = emailService;
       _config = config;
       _userManager = userManager;
       _signInManager = signInManager;
@@ -35,7 +41,7 @@ namespace CI.API.Controllers
 
     // Post api/Auth/login
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewmodel model)
     {
       var user = await _userManager.FindByNameAsync(model.Username);
       if (user == null)
@@ -50,6 +56,47 @@ namespace CI.API.Controllers
       }
       var token = await JwtTokenGenerator(user);
       return Ok(new { result = result, token = token });
+    }
+
+    // Post api/Auth/resetpassword
+    [HttpPost("resetpassword")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewmodel model)
+    {
+      var user = await _userManager.FindByEmailAsync(model.Email);
+      if (user != null || user.EmailConfirmed)
+      {
+        // Send confirmation email.
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var changePasswordUrl = Request.Headers["changeEmailUrl"]; //http://localhost:4200/change-password
+
+        var uriBuilder = new UriBuilder(changePasswordUrl);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["token"] = token;
+        query["userid"] = user.Id;
+        uriBuilder.Query = query.ToString();
+        var urlString = uriBuilder.ToString();
+
+        var emailBody = $"<p>Click on the link below to change your password.</p><p>{urlString}</p>";
+        await _emailService.SendAsync(model.Email, emailBody, _emailOptions.Value);
+
+        return Ok();
+      }
+      return Unauthorized();
+    }
+
+    // Post api/Auth/changepassword
+    [HttpPost("changepassword")]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewmodel model)
+    {
+      var user = await _userManager.FindByIdAsync(model.UserId);
+      var resetPasswordResult = await _userManager.ResetPasswordAsync(user, Uri.UnescapeDataString(model.Token), model.Password);
+
+      if (resetPasswordResult.Succeeded)
+      {
+        return Ok();
+      }
+
+      return Unauthorized();
     }
 
     // Post api/auth/confirmemail

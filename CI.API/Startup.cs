@@ -36,6 +36,8 @@ namespace CI.API
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 4;
+        
+        options.User.RequireUniqueEmail = true;
       });
       identityBuilder.AddEntityFrameworkStores<ApplicationDbContext>();
       identityBuilder.AddSignInManager<SignInManager<User>>();

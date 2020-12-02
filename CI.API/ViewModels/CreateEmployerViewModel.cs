@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CI.API.ViewModels
 {
-    public class CreateEmployerViewModel
+    public class CreateEmployerViewmodel
     {
         [Required]
         public string Username { get; set; }

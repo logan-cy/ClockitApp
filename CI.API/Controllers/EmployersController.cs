@@ -35,7 +35,7 @@ namespace CI.API.Controllers
 
     // POST: api/employers/create http://localhost:5000/api/employers/create
     [HttpPost("Create")]
-    public async Task<IActionResult> Create(CreateEmployerViewModel model)
+    public async Task<IActionResult> Create(CreateEmployerViewmodel model)
     {
       // TODO: move this to Seed method.
       // TODO: set up enum for role names.
