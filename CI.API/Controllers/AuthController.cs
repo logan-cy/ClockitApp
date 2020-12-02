@@ -48,8 +48,23 @@ namespace CI.API.Controllers
       {
         return BadRequest(result);
       }
-      var t = await JwtTokenGenerator(user);
-      return Ok(new { result = result, token = t });
+      var token = await JwtTokenGenerator(user);
+      return Ok(new { result = result, token = token });
+    }
+
+    // Post api/auth/confirmemail
+    [HttpPost("confirmemail")]
+    public async Task<IActionResult> ConfirmEmail(ConfirmEmailViewmodel model)
+    {
+      var employer = await _userManager.FindByIdAsync(model.UserId);
+      var confirm = await _userManager.ConfirmEmailAsync(employer, Uri.UnescapeDataString(model.Token));
+
+      if (confirm.Succeeded)
+      {
+        return Ok();
+      }
+
+      return Unauthorized();
     }
 
     private async Task<string> JwtTokenGenerator(User userInfo)

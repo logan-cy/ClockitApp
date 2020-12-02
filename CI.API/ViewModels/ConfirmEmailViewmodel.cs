@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CI.API.ViewModels
 {
-  public class LoginViewModel
+  public class ConfirmEmailViewmodel 
     {
         [Required]
-        public string Username { get; set; }
+        public string Token { get; set; }
         [Required]
-        public string Password { get; set; }
+        public string UserId { get; set; }
     }
 }
