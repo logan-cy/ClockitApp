@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -8,13 +10,16 @@ import { NgForm } from '@angular/forms';
 })
 export class RegisterComponent implements OnInit {
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
   }
 
   onSubmit(f: NgForm) {
-    console.log(f.value);
-    console.log(f.valid);
+    const registerObserver = {
+      next: x => console.log("User registered"),
+      error: err => console.error(err)
+    };
+    this.authService.register(f.value).subscribe(registerObserver);
   }
 }
