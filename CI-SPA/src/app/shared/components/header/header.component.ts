@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgProgress, NgProgressRef } from 'ngx-progressbar';
-import { ProgressBarService } from '../../progress-bar.service';
+import { ProgressBarService } from '../../services/progress-bar.service';
 
 @Component({
   selector: 'app-header',

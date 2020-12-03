@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProgressBarService } from 'src/app/shared/progress-bar.service';
+import { ProgressBarService } from 'src/app/shared/services/progress-bar.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({

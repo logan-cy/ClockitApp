@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ProgressBarService } from 'src/app/shared/progress-bar.service';
+import { ProgressBarService } from 'src/app/shared/services/progress-bar.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
