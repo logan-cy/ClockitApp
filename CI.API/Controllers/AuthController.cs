@@ -67,7 +67,7 @@ namespace CI.API.Controllers
       {
         // Send confirmation email.
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var changePasswordUrl = Request.Headers["changeEmailUrl"]; //http://localhost:4200/change-password
+        var changePasswordUrl = Request.Headers["changePasswordUrl"]; //http://localhost:4200/change-password
 
         var uriBuilder = new UriBuilder(changePasswordUrl);
         var query = HttpUtility.ParseQueryString(uriBuilder.Query);
