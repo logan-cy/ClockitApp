@@ -77,7 +77,7 @@ namespace CI.API.Controllers
         var urlString = uriBuilder.ToString();
 
         var emailBody = $"<p>Click on the link below to change your password.</p><p>{urlString}</p>";
-        await _emailService.SendAsync(model.Email, emailBody, _emailOptions.Value);
+        await _emailService.SendAsync(model.Email, emailBody, "Reset your password", _emailOptions.Value);
 
         return Ok();
       }

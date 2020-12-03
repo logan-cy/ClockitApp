@@ -68,7 +68,7 @@ namespace CI.API.Controllers
       var urlString = uriBuilder.ToString();
 
       var emailBody = $"<p>Please confirm your email by clicking on the link below.</p><p>{urlString}</p>";
-      await _emailService.SendAsync(model.Email, emailBody, _emailOptions.Value);
+      await _emailService.SendAsync(model.Email, emailBody, "Please confirm your account", _emailOptions.Value);
       //////////////////////////////
 
       var user = await _userManager.FindByNameAsync(employer.UserName);

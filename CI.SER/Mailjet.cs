@@ -7,17 +7,18 @@ namespace CI.SER
 {
   public class Mailjet : IEmail
   {
-    public async Task SendAsync(string emailTo, string body, EmailOptionsDTO options)
-    {        
+    public async Task SendAsync(string emailTo, string body, string subject, EmailOptionsDTO options)
+    {
       var client = new SmtpClient(options.Host, options.Port)
       {
         Credentials = new NetworkCredential(options.ApiKey, options.ApiKeySecret)
       };
 
-      var message = new MailMessage(options.SenderEmail, emailTo) {
+      var message = new MailMessage(options.SenderEmail, emailTo)
+      {
         Body = body,
         IsBodyHtml = true,
-        Subject = "[ClockIt]"
+        Subject = $"[ClockIt] {subject}"
       };
 
       await client.SendMailAsync(message);
