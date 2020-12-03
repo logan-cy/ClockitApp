@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ColumnOneComponent } from './layouts/column-one/column-one.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RouterModule } from '@angular/router';
-import { AuthService } from './services/auth.service';
-
+import { NgProgressModule } from 'ngx-progressbar';
 
 
 @NgModule({
   declarations: [ColumnOneComponent, HeaderComponent],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    NgProgressModule
   ],
   exports: [
     ColumnOneComponent

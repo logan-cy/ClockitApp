@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ProgressBarService } from 'src/app/shared/progress-bar.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
@@ -11,15 +12,24 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 export class ResetPasswordComponent implements OnInit {
 
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private progService: ProgressBarService) { }
 
   ngOnInit() {
   }
 
   onSubmit(f: NgForm) {
+    this.progService.startLoading();
     const resetPasswordObserver = {
-      next: x => console.log("Check email to change password."),
-      error: err => console.error(err)
+      next: x => {
+        this.progService.setSuccess();
+        console.log("Check email to change password.");
+        this.progService.completeLoading();
+      },
+      error: err => {
+        this.progService.setError();
+        console.error(err);
+        this.progService.completeLoading();
+      }
     };
     this.authService.resetPassword(f.value).subscribe(resetPasswordObserver);
   }

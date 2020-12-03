@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NgProgress, NgProgressRef } from 'ngx-progressbar';
+import { ProgressBarService } from '../../progress-bar.service';
 
 @Component({
   selector: 'app-header',
@@ -7,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(private progress: NgProgress, private progService: ProgressBarService) { }
 
   ngOnInit() {
+    this.progService.progressBar = this.progress.ref("progressBar")
   }
 
 }
