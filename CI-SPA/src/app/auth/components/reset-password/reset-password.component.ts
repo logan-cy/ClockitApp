@@ -15,6 +15,7 @@ export class ResetPasswordComponent implements OnInit {
   constructor(private authService: AuthService, private progService: ProgressBarService) { }
 
   ngOnInit() {
+    this.progService.currentColor = this.progService.defaultColor;
   }
 
   onSubmit(f: NgForm) {

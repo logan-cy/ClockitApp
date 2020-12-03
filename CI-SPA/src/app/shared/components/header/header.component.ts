@@ -9,7 +9,7 @@ import { ProgressBarService } from '../../progress-bar.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private progress: NgProgress, private progService: ProgressBarService) { }
+  constructor(private progress: NgProgress, public progService: ProgressBarService) { }
 
   ngOnInit() {
     this.progService.progressBar = this.progress.ref("progressBar")

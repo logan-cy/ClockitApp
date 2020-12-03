@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private progService: ProgressBarService) { }
 
   ngOnInit() {
+    this.progService.currentColor = this.progService.defaultColor;
   }
 
   onSubmit(f: NgForm) {
@@ -20,9 +21,9 @@ export class LoginComponent implements OnInit {
 
     const loginObserver = {
       next: x => {
-        this.progService.setSuccess();
         console.log("User logged in");
         this.progService.completeLoading();
+        this.progService.setSuccess();
       },
       error: err => {
         this.progService.setError();

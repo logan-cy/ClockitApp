@@ -16,6 +16,7 @@ export class ConfirmEmailComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService, private progService: ProgressBarService) { }
 
   ngOnInit() {
+    this.progService.currentColor = this.progService.defaultColor;
     this.progService.startLoading();
     this.urlParams.token = this.route.snapshot.queryParamMap.get("token");
     this.urlParams.userId = this.route.snapshot.queryParamMap.get("userid");
