@@ -1,10 +1,14 @@
+@import "~bootswatch/dist/darkly/variables";
+@import "~bootstrap/scss/bootstrap";
+@import "~bootswatch/dist/darkly/bootswatch";
+
 /* You can add global styles to this file, and also import other style files */
 .ng-valid[required], .ng-valid.required {
-  border-left: 5px solid #405a04;
+  border-left: 5px solid $success;
 }
 
 .ng-invalid:not(form) {
-  border-left: 5px solid #a82400;
+  border-left: 5px solid $danger;
 }
 
 button[type="submit"]:disabled {
