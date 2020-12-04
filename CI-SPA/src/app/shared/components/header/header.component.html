@@ -18,7 +18,7 @@
 
       <li class="nav-item dropdown" dropdown *ngIf="authService.loggedIn();">
         <a class="nav-link" dropdownToggle>
-          Profile
+          Welcome {{ authService.decodedToken?.unique_name }}
         </a>
         <div class="dropdown-menu dropdown-menu-right" *dropdownMenu>
           <a class="dropdown-item" [routerLink]="['reset-password']" routerLinkActive="active"><i

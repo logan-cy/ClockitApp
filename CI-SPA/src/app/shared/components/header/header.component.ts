@@ -18,7 +18,6 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.progService.progressBar = this.progress.ref("progressBar");
-
     this.loggedIn = this.authService.loggedIn();
   }
 

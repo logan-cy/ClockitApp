@@ -16,6 +16,8 @@ export class AuthService {
 
   helper = new JwtHelperService();
 
+  decodedToken: any;
+
   constructor(private http: HttpClient) { }
 
   login(model: any) {
@@ -24,6 +26,7 @@ export class AuthService {
         map((response: any) => {
           const user = response;
           if (user.result.succeeded) {
+            this.decodedToken = this.helper.decodeToken(user.token);
             localStorage.setItem("token", user.token);
           }
         })
