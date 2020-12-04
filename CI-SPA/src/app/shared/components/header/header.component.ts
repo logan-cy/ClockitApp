@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from 'ngx-alerts';
 import { NgProgress, NgProgressRef } from 'ngx-progressbar';
+import { AuthService } from '../../services/auth.service';
 import { ProgressBarService } from '../../services/progress-bar.service';
 
 @Component({
@@ -10,10 +11,20 @@ import { ProgressBarService } from '../../services/progress-bar.service';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor(private progress: NgProgress, public progService: ProgressBarService, private alertService: AlertService) { }
+  loggedIn: boolean = false;
+
+  constructor(private progress: NgProgress, public progService: ProgressBarService,
+    private alertService: AlertService, public authService: AuthService) { }
 
   ngOnInit() {
-    this.progService.progressBar = this.progress.ref("progressBar")
+    this.progService.progressBar = this.progress.ref("progressBar");
+
+    this.loggedIn = this.authService.loggedIn();
+  }
+
+  logOut() {
+    localStorage.removeItem("token");
+    this.alertService.success("You've been logged out.");
   }
 
 }
