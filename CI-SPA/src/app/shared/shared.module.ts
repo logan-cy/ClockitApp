@@ -5,13 +5,20 @@ import { HeaderComponent } from './components/header/header.component';
 import { RouterModule } from '@angular/router';
 import { NgProgressModule } from 'ngx-progressbar';
 
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { AlertModule } from 'ngx-alerts';
 
 @NgModule({
   declarations: [ColumnOneComponent, HeaderComponent],
   imports: [
     CommonModule,
     RouterModule,
-    NgProgressModule
+    NgProgressModule,
+
+    BrowserModule,
+    BrowserAnimationsModule,
+    AlertModule.forRoot({ maxMessages: 5, timeout: 5000 })
   ],
   exports: [
     ColumnOneComponent

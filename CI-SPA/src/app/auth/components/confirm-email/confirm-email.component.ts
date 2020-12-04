@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProgressBarService } from 'src/app/shared/services/progress-bar.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { AlertService } from 'ngx-alerts';
 
 @Component({
   selector: 'app-confirm-email',
@@ -13,7 +14,7 @@ export class ConfirmEmailComponent implements OnInit {
   emailConfirmed: boolean = false;
   urlParams: any = {};
 
-  constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService, private progService: ProgressBarService) { }
+  constructor(private route: ActivatedRoute, private router: Router, private authService: AuthService, private progService: ProgressBarService, private alertService: AlertService) { }
 
   ngOnInit() {
     this.progService.currentColor = this.progService.defaultColor;
@@ -24,14 +25,18 @@ export class ConfirmEmailComponent implements OnInit {
   }
 
   confirmEmail() {
+    this.progService.currentColor = this.progService.defaultColor;
+    this.alertService.info("Working...");
+
     this.authService.confirmEmail(this.urlParams).subscribe(() => {
       this.progService.setSuccess();
-      console.log("email confirmed successfully");
+      this.alertService.success("Your email address was successfully confirmed.");
       this.emailConfirmed = true;
       this.progService.completeLoading();
     }, error => {
       this.progService.setError();
-      console.error(error);
+      console.log(error.error.errors[0].Description);
+      this.alertService.danger("Unable to confirm your email address; please see console.");
       this.emailConfirmed = false;
       this.progService.completeLoading();
     });
