@@ -28,6 +28,8 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "../CI-SPA/node_modules/bootstrap/scss/bootstrap.scss",
               "../CI-SPA/node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss",
               "../CI-SPA/node_modules/@fortawesome/fontawesome-free/scss/brands.scss",
@@ -95,6 +97,8 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "./node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -126,6 +130,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "CI-SPA"
 }

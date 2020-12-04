@@ -9,6 +9,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AlertModule } from 'ngx-alerts';
 
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+
 @NgModule({
   declarations: [ColumnOneComponent, HeaderComponent],
   imports: [
@@ -18,7 +20,9 @@ import { AlertModule } from 'ngx-alerts';
 
     BrowserModule,
     BrowserAnimationsModule,
-    AlertModule.forRoot({ maxMessages: 5, timeout: 5000 })
+    AlertModule.forRoot({ maxMessages: 5, timeout: 5000 }),
+
+    BsDropdownModule.forRoot()
   ],
   exports: [
     ColumnOneComponent
