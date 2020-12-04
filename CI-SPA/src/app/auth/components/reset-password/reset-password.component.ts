@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProgressBarService } from 'src/app/shared/services/progress-bar.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { AlertService } from 'ngx-alerts';
-import { error } from 'console';
 
 @Component({
   selector: 'app-reset-password',
