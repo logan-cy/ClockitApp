@@ -1,3 +1,6 @@
+using System.Text;
+using System.Net;
+using System.Net.Http.Headers;
 using System.Web;
 using System.Collections.Generic;
 using CI.DAL;
@@ -12,6 +15,8 @@ using Microsoft.Extensions.Options;
 using CI.SER.DTOs;
 using CI.SER.Interfaces;
 using System;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CI.API.Controllers
 {
@@ -24,9 +29,11 @@ namespace CI.API.Controllers
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IOptions<EmailOptionsDTO> _emailOptions;
     private readonly IEmail _emailService;
+    private readonly IConfiguration _config;
 
-    public EmployersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IOptions<EmailOptionsDTO> emailOptions, IEmail emailService)
+    public EmployersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IOptions<EmailOptionsDTO> emailOptions, IEmail emailService, IConfiguration config)
     {
+      _config = config;
       _emailService = emailService;
       _emailOptions = emailOptions;
       _roleManager = roleManager;
@@ -56,6 +63,13 @@ namespace CI.API.Controllers
         return BadRequest(result);
       }
 
+      await SendConfirmationEmail(employer);
+      return Ok();
+
+    }
+
+    private async Task SendConfirmationEmail(User employer)
+    {
       // Send confirmation email.
       var token = await _userManager.GenerateEmailConfirmationTokenAsync(employer);
       var confirmEmailUrl = Request.Headers["confirmEmailUrl"];//http://localhost:4200/email-confirm
@@ -68,13 +82,11 @@ namespace CI.API.Controllers
       var urlString = uriBuilder.ToString();
 
       var emailBody = $"<p>Please confirm your email by clicking on the link below.</p><p>{urlString}</p>";
-      await _emailService.SendAsync(model.Email, emailBody, "Please confirm your account", _emailOptions.Value);
+      await _emailService.SendAsync(employer.Email, emailBody, "Please confirm your account", _emailOptions.Value);
       //////////////////////////////
 
       var user = await _userManager.FindByNameAsync(employer.UserName);
       await _userManager.AddToRoleAsync(user, "Employer");
-
-      return Ok(result);
     }
 
     //POST: api/values
@@ -85,10 +97,31 @@ namespace CI.API.Controllers
     }
 
     //PUT: api/values
+    [Authorize]
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    public async Task<IActionResult> Put(int id, [FromBody] CreateEmployerViewmodel model)
     {
+      try
+      {
+        var user = await GetUser();
+        if (user != null)
+        {
+          user.Email = model.Email;
+          user.EmailConfirmed = false;
+          await _userManager.UpdateAsync(user);
 
+          await SendConfirmationEmail(user);
+          return Ok(user);
+        }
+        else
+        {
+          return BadRequest(model);
+        }
+      }
+      catch (Exception ex)
+      {
+        return BadRequest(ex);
+      }
     }
 
     //DELETE: api/values/5
@@ -97,5 +130,13 @@ namespace CI.API.Controllers
     {
 
     }
+
+    private async Task<User> GetUser()
+    {
+      string userId = User.Claims.First(c => c.Type == "UserID").Value;
+
+      return await _userManager.FindByIdAsync(userId);
+    }
+
   }
 }

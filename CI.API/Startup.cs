@@ -36,7 +36,7 @@ namespace CI.API
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 4;
-        
+
         options.User.RequireUniqueEmail = true;
       });
       identityBuilder.AddEntityFrameworkStores<ApplicationDbContext>();
@@ -70,6 +70,8 @@ namespace CI.API
 
       services.AddControllers();
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+      services.AddCors();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,6 +80,14 @@ namespace CI.API
       if (env.IsDevelopment())
       {
         app.UseDeveloperExceptionPage();
+
+        app.UseCors(builder =>
+        {
+          builder.AllowAnyHeader();
+          builder.AllowAnyMethod();
+          builder.AllowAnyOrigin();
+        });
+
       }
 
       app.UseCors(builder =>
